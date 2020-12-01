@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class LogController {
     @GetMapping
-    public void log(){
+    public void log() {
         log.info("text log");
     }
-
 }

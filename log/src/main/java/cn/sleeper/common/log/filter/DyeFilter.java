@@ -1,15 +1,16 @@
 package cn.sleeper.common.log.filter;
 
+import cn.sleeper.common.log.constant.ContextConstant;
 import cn.sleeper.common.log.util.ContextUtil;
 import cn.sleeper.common.log.util.IpUtil;
 import cn.sleeper.common.log.vo.GlobalContext;
-import org.springframework.objenesis.instantiator.util.UnsafeUtils;
+import com.alibaba.fastjson.JSON;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.net.ContentHandler;
 import java.util.UUID;
 
 
@@ -23,6 +24,7 @@ import java.util.UUID;
 @WebFilter(filterName = "DyeFilter")
 public class DyeFilter implements Filter {
 
+    @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest request = (HttpServletRequest) req;
         initGlobalContext(request);
@@ -33,17 +35,23 @@ public class DyeFilter implements Filter {
         }
     }
 
-    private static void initGlobalContext(HttpServletRequest request) {
+    private static void initGlobalContext(HttpServletRequest servletRequest) {
         GlobalContext context = new GlobalContext();
-        context.setClientIp(IpUtil.getClientAddress(request));
-        context.setTraceId(UUID.randomUUID().toString());
+        String contextStr = servletRequest.getHeader(ContextConstant.REQUEST_CONTEXT);
+        if (!StringUtils.isEmpty(contextStr)){
+            context = JSON.parseObject(contextStr,GlobalContext.class);
+        }else{
+            context.setTraceId(UUID.randomUUID().toString());
+            context.setClientIp(IpUtil.getClientAddress(servletRequest));
+        }
         ContextUtil.setCurrentContext(context);
     }
 
-
-    public void init(FilterConfig config) throws ServletException {
+    @Override
+    public void init(FilterConfig config){
     }
 
+    @Override
     public void destroy() {
     }
 }

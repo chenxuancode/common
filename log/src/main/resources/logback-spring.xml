@@ -6,7 +6,7 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %X{trackId} [%15.15t] %class{39}.%method[%L] : %m%n</pattern>
             <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->
-            <charset>UTF-8</charset>
+            <charset>UTF-8</charset>f
         </encoder>
     </appender>
 

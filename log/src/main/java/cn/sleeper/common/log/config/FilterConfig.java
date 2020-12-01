@@ -17,6 +17,7 @@ public class FilterConfig {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new DyeFilter());
         registration.addUrlPatterns("/*");
+        registration.setName("DyeFilter");
         registration.setOrder(1);
         return registration;
     }
