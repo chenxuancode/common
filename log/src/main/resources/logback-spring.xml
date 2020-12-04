@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-
-    <property name="CHARSET" value="UTF-8"/>
-
+<configuration scan="true" scanPeriod="60 seconds" debug = "true">
 
     <springProperty scope="context" name="springAppName"
                     source="spring.application.name" />
     <springProperty scope="context" name="springActive"
                     source="spring.profiles.active" />
+    <property name="CHARSET" value="UTF-8"/>
     <property name="SAVE_PATH" value="/data/logs/${springAppName}"/>
     <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %X{trackId} [%15.15t] %class{39}.%method[%L] : %m%n"/>
     <if condition='property("springActive").equals("prod")'>
@@ -18,7 +16,7 @@
             <property name="maxHistory" value="3"/>
         </else>
     </if>
-    <property name="maxFileSize" value="500MB"/>
+    <property name="maxFileSize" value="1KB"/>
     <property name="maxHistory" value="3"/>
 
 
@@ -69,13 +67,13 @@
         <append>true</append>
     </appender>
 
-    <appender name="borderAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="statAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
-        <file>${SAVE_PATH}/${springAppName}-border.log</file>
+        <file>${SAVE_PATH}/${springAppName}-stat.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${SAVE_PATH}/border/${springAppName}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${SAVE_PATH}/stat/${springAppName}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>${maxHistory}</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${maxFileSize}</maxFileSize>
@@ -89,9 +87,6 @@
     </appender>
 
     <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
         <file>${SAVE_PATH}/${springAppName}-error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${SAVE_PATH}/error/${springAppName}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -112,7 +107,20 @@
         <append>true</append>
     </appender>
 
+    <logger name="digestLogger" additivity ="true">
+        <appender-ref ref="digestAppender" />
+    </logger>
+    <logger name="bizLogger" additivity ="true">
+        <appender-ref ref="bizAppender" />
+    </logger>
+    <logger name="statLogger" additivity ="true">
+        <appender-ref ref="statAppender" />
+    </logger>
+    <logger name="errorLogger" additivity ="true" level="ERROR">
+        <appender-ref ref="errorAppender" />
+    </logger>
 
+    <logger name = "cn.sleeper" level = "DEBUG"/>
     <!-- 控制台输出日志级别 -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
