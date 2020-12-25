@@ -16,7 +16,7 @@
             <property name="maxHistory" value="3"/>
         </else>
     </if>
-    <property name="maxFileSize" value="1KB"/>
+    <property name="maxFileSize" value="100M"/>
     <property name="maxHistory" value="3"/>
 
 

@@ -1,6 +1,9 @@
 package cn.sleeper.common.log.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import cn.sleeper.common.log.Req.LogTestReq;
+import cn.sleeper.common.log.vo.Resp;
+import cn.sleeper.common.log.vo.RespCodeEnum;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,9 +17,8 @@ import static cn.sleeper.common.log.util.LogApi.*;
 @RestController
 @RequestMapping("/test")
 public class LogController  {
-    @GetMapping
-    public void log() {
-
+    @RequestMapping
+    public Resp<String> log(@RequestBody LogTestReq req) {
         blog.trace("测试业务日志 trace");
         blog.debug("测试业务日志 debug");
         blog.info("测试业务日志 info");
@@ -40,6 +42,6 @@ public class LogController  {
         dlog.info("测试摘要日志 info");
         dlog.warn("测试摘要日志 warn");
         dlog.error("测试摘要日志 error");
-
+        return new Resp( "data",RespCodeEnum.SUCCESS);
     }
 }
